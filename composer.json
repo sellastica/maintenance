@@ -1,0 +1,22 @@
+{
+    "name": "sellastica/maintenance",
+	"type": "project",
+	"homepage": "https://github.com/sellastica/maintenance",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Tomáš Krejčí",
+            "email": "tomas@differencemakers.cz"
+        }
+    ],
+    "require": {
+		"php": ">=7.1"
+    },
+	"require-dev": {
+    },
+	"autoload": {
+        "psr-4": {
+            "Sellastica\\Maintenance\\": "src/"
+        }
+	}
+}
