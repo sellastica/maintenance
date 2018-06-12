@@ -3,22 +3,51 @@ namespace Sellastica\Maintenance;
 
 class Maintenance
 {
-	/** @var string|null */
+	/** @var string */
 	private static $localFile;
-	/** @var string|null */
+	/** @var string */
 	private static $globalFile;
+	/** @var string */
+	private static $invisibleLocalFile;
 
 
 	/**
 	 * @param string $localFile
 	 * @param string $globalFile
+	 * @param string $invisibleLocalFile
 	 */
-	public static function init(string $localFile, string $globalFile): void
+	public static function init(
+		string $localFile,
+		string $globalFile,
+		string $invisibleLocalFile
+	): void
 	{
 		self::$localFile = $localFile;
 		self::$globalFile = $globalFile;
+		self::$invisibleLocalFile = $invisibleLocalFile;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
+	public static function is(): bool
+	{
+		return self::isLocal() || self::isGlobal() || self::isInvisibleLocal();
+	}
+
+	public static function remove(): void
+	{
+		self::removeLocal();
+		self::removeGlobal();
+		self::removeInvisibleLocal();
+	}
+
+
+	/*****************************************************/
+	/********************** local ************************/
+	/*****************************************************/
+
+
 	/**
 	 * @return bool
 	 */
@@ -39,7 +68,13 @@ class Maintenance
 		}
 	}
 
-	public static function isGlobal(): bool 
+
+	/*****************************************************/
+	/********************** global ***********************/
+	/*****************************************************/
+
+
+	public static function isGlobal(): bool
 	{
 		return is_file(self::$globalFile);
 	}
@@ -56,17 +91,28 @@ class Maintenance
 		}
 	}
 
+	/*****************************************************/
+	/***************** invisible local *******************/
+	/*****************************************************/
+
+
 	/**
 	 * @return bool
 	 */
-	public static function is(): bool 
+	public static function isInvisibleLocal(): bool
 	{
-		return self::isLocal() || self::isGlobal();
+		return is_file(self::$invisibleLocalFile);
 	}
 
-	public static function remove()
+	public static function setInvisibleLocal()
 	{
-		self::removeLocal();
-		self::removeGlobal();
+		touch(self::$invisibleLocalFile);
+	}
+
+	public static function removeInvisibleLocal()
+	{
+		if (self::isInvisibleLocal()) {
+			unlink(self::$invisibleLocalFile);
+		}
 	}
 }
